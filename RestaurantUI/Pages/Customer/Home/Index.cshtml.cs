@@ -10,7 +10,7 @@ namespace RestaurantUI.Pages.Customer.Home
         public IUnitOfWork _unitOfWork { get; }
         public IEnumerable<MenuItem> MenuItemsList { get; set; }
         public IEnumerable<Category> CategoryList { get; set; }
-
+         
         public IndexModel(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
