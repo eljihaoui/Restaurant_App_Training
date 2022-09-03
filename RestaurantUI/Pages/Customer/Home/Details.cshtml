@@ -7,6 +7,8 @@
 <div class="">
     <form method="post">
         <div class="container backgroundWhite">
+            <input type="hidden" asp-for="@Model.ShoppingCart.UserId" />
+            <input type="hidden" asp-for="@Model.ShoppingCart.MenuItemId" />
             <div class="card">
                 <div class="card-header">
                     <div class="text-light ml-0 row ">
@@ -33,8 +35,8 @@
 
                                         <div class="form-floating my-2">
                                             <label>Count</label>
-                                            <input type="number" asp-for="Count" class="form-control" placeholder="count" aria-required="true" />
-                                            <span asp-validation-for="Count" class="text-danger"></span>
+                                            <input type="number" asp-for="@Model.ShoppingCart.Count" class="form-control" placeholder="count" aria-required="true" />
+                                            <span asp-validation-for="@Model.ShoppingCart.Count" class="text-danger"></span>
                                         </div>
                                     </div>
                                 </div>
