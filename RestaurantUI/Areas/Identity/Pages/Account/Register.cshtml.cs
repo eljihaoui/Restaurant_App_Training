@@ -13,6 +13,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using Restaurant.Models;
+using Restaurant.Utility;
 
 namespace RestaurantUI.Areas.Identity.Pages.Account
 {
@@ -23,17 +25,20 @@ namespace RestaurantUI.Areas.Identity.Pages.Account
         private readonly UserManager<IdentityUser> _userManager;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly RoleManager<IdentityRole> _roleManger;
 
         public RegisterModel(
             UserManager<IdentityUser> userManager,
             SignInManager<IdentityUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            RoleManager<IdentityRole> roleManger)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _roleManger = roleManger;
         }
 
         [BindProperty]
@@ -60,12 +65,26 @@ namespace RestaurantUI.Areas.Identity.Pages.Account
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
+            [Required]
+            public string FirstName { get; set; }
+            [Required]
+            public string LastName { get; set; }
+            [Required]
+            public string PhoneNumber { get; set; }
+
         }
 
         public async Task OnGetAsync(string returnUrl = null)
         {
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            if (!await _roleManger.RoleExistsAsync(ConstDefs.ManagerRole))
+            {
+                await _roleManger.CreateAsync(new IdentityRole(ConstDefs.ManagerRole));
+                await _roleManger.CreateAsync(new IdentityRole(ConstDefs.KitchenRole));
+                await _roleManger.CreateAsync(new IdentityRole(ConstDefs.CustomerRole));
+                await _roleManger.CreateAsync(new IdentityRole(ConstDefs.FontDeskRole));
+            }
         }
 
         public async Task<IActionResult> OnPostAsync(string? returnUrl = null)
@@ -74,10 +93,16 @@ namespace RestaurantUI.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                var user = new IdentityUser { UserName = Input.Email, Email = Input.Email };
+                var user = new ApplicationUser { UserName = Input.Email, Email = Input.Email };
+                user.PhoneNumber = Input.PhoneNumber;
+                user.LastName = Input.LastName;
+                user.FirstName = Input.FirstName;
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {
+                    string role = Request.Form["rUserRole"].ToString();
+                    string roleToAdd = role != "" ? role : ConstDefs.CustomerRole;
+                    await _userManager.AddToRoleAsync(user, roleToAdd);
                     _logger.LogInformation("User created a new account with password.");
 
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);

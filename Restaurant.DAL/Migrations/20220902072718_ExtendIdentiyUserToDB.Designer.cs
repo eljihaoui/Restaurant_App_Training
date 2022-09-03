@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Restaurant.DAL;
 
@@ -11,9 +12,10 @@ using Restaurant.DAL;
 namespace Restaurant.DAL.Migrations
 {
     [DbContext(typeof(RestaurantDBContext))]
-    partial class RestaurantDBContextModelSnapshot : ModelSnapshot
+    [Migration("20220902072718_ExtendIdentiyUserToDB")]
+    partial class ExtendIdentiyUserToDB
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -301,33 +303,6 @@ namespace Restaurant.DAL.Migrations
                     b.ToTable("MenuItem");
                 });
 
-            modelBuilder.Entity("Restaurant.Models.ShoppingCart", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int>("Count")
-                        .HasColumnType("int");
-
-                    b.Property<int>("MenuItemId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("MenuItemId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("ShoppingCart");
-                });
-
             modelBuilder.Entity("Restaurant.Models.ApplicationUser", b =>
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
@@ -411,25 +386,6 @@ namespace Restaurant.DAL.Migrations
                     b.Navigation("Category");
 
                     b.Navigation("FoodType");
-                });
-
-            modelBuilder.Entity("Restaurant.Models.ShoppingCart", b =>
-                {
-                    b.HasOne("Restaurant.Models.MenuItem", "MenuItem")
-                        .WithMany()
-                        .HasForeignKey("MenuItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Restaurant.Models.ApplicationUser", "ApplicationUser")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ApplicationUser");
-
-                    b.Navigation("MenuItem");
                 });
 #pragma warning restore 612, 618
         }

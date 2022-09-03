@@ -3,7 +3,8 @@ using Restaurant.Models;
 
 namespace Restaurant.DAL.Interfaces
 {
-    public interface IShoppingCartRepository : IRepository<ShoppingCart>
+    public interface IMenuItemRepository : IRepository<MenuItem>
     {
+        void Update(MenuItem menuItem);
     }
 }

@@ -27,6 +27,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Restaurant.DAL\Restaurant.DAL.csproj" />
+    <ProjectReference Include="..\Restaurant.Utility\Restaurant.Utility.csproj" />
   </ItemGroup>
 
   <ItemGroup>

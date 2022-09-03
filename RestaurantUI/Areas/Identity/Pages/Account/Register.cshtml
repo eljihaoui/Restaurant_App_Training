@@ -1,4 +1,5 @@
 ﻿@page
+@using Restaurant.Utility
 @model RegisterModel
 @{
     ViewData["Title"] = "Register";
@@ -18,6 +19,21 @@
                 <span asp-validation-for="Input.Email" class="text-danger"></span>
             </div>
             <div class="form-floating">
+                <label asp-for="Input.FirstName"></label>
+                <input asp-for="Input.FirstName" class="form-control"  aria-required="true" />
+                <span asp-validation-for="Input.FirstName" class="text-danger"></span>
+            </div>
+            <div class="form-floating">
+                <label asp-for="Input.LastName"></label>
+                <input asp-for="Input.LastName" class="form-control" aria-required="true" />
+                <span asp-validation-for="Input.LastName" class="text-danger"></span>
+            </div>
+            <div class="form-floating">
+                <label asp-for="Input.PhoneNumber"></label>
+                <input asp-for="Input.PhoneNumber" class="form-control" aria-required="true" />
+                <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
+            </div>
+            <div class="form-floating">
                 <label asp-for="Input.Password"></label>
                 <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" />
                 <span asp-validation-for="Input.Password" class="text-danger"></span>
@@ -26,6 +42,13 @@
                 <label asp-for="Input.ConfirmPassword"></label>
                 <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" />
                 <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+            </div>
+            <div class="form-floating mt-2">
+               <label>Select Role</label><br />
+                <input type="radio" name="rUserRole" value="@ConstDefs.ManagerRole" /> @ConstDefs.ManagerRole
+                <input type="radio" name="rUserRole" value="@ConstDefs.KitchenRole" /> @ConstDefs.KitchenRole
+                <input type="radio" name="rUserRole" value="@ConstDefs.FontDeskRole" /> @ConstDefs.FontDeskRole
+                <input type="radio" name="rUserRole" value="@ConstDefs.CustomerRole" /> @ConstDefs.CustomerRole
             </div>
             <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary mt-2">Register</button>
         </form>

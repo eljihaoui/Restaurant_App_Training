@@ -5,6 +5,8 @@ using Restaurant.DAL.Implementations;
 using Restaurant.DAL.Interfaces;
 using RestaurantUI.Profiles;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using Restaurant.Utility;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,9 +17,11 @@ builder.Services.AddRazorPages();
 string strcon = builder.Configuration.GetConnectionString("RestaurantStrCon");
 builder.Services.AddDbContext<RestaurantDBContext>(options => options.UseSqlServer(strcon));
 
-builder.Services.AddDefaultIdentity<IdentityUser>()
-    .AddEntityFrameworkStores<RestaurantDBContext>();
+builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+    .AddEntityFrameworkStores<RestaurantDBContext>()
+    .AddDefaultTokenProviders();
 
+builder.Services.AddSingleton<IEmailSender, EmailSender>();
 // Add service NToastNotify
 builder.Services.AddRazorPages().AddNToastNotifyToastr(new ToastrOptions()
 {
