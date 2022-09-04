@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Restaurant.DAL.Interfaces
+﻿namespace Restaurant.DAL.Interfaces
 {
     public interface IUnitOfWork : IDisposable
     {
@@ -12,6 +6,9 @@ namespace Restaurant.DAL.Interfaces
         IFoodTypeRepository FoodTypeRepo { get; }   
         IMenuItemRepository MenuItemRepo { get; }   
         IShoppingCartRepository ShoppingCartRepo { get; }   
+        IOrderRepository OrderRepo { get; }
+        IOrderDetailsCartRepository OrderDetailsRepo { get; }   
+
         Task<bool> Save();
     }
 }
