@@ -30,6 +30,7 @@ builder.Services.ConfigureApplicationCookie(options =>
 });
 
 builder.Services.AddSingleton<IEmailSender, EmailSender>();
+builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
 // Add service NToastNotify
 builder.Services.AddRazorPages().AddNToastNotifyToastr(new ToastrOptions()
 {
