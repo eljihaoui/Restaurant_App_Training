@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Restaurant.DAL.Interfaces;
 using Restaurant.Models;
 using Restaurant.Utility;
+using Stripe.Checkout;
 using System.Security.Claims;
 
 namespace RestaurantUI.Pages.Customer.Cart
@@ -42,7 +43,7 @@ namespace RestaurantUI.Pages.Customer.Cart
         }
 
         // action PlaceOrder
-        public async Task OnPost()
+        public async Task<IActionResult> OnPost()
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier).Value;
             if (userId != null)
@@ -78,12 +79,55 @@ namespace RestaurantUI.Pages.Customer.Cart
                     };
                     await _unitOfWork.OrderDetailsRepo.Add(orderDetails);
                 }
-                _unitOfWork.ShoppingCartRepo.RemoveRange(ShoppingCartList);
-                await _unitOfWork.Save();   
 
+               //_unitOfWork.ShoppingCartRepo.RemoveRange(ShoppingCartList);
+                await _unitOfWork.Save();
 
+                //var domain = "http://localhost:4242";
 
+                string strpProtocal = HttpContext.Request.IsHttps ? "https://" : "http://";
+                string host = HttpContext.Request.Host.Value;
+                var domain = strpProtocal + host;
+
+                var options = new SessionCreateOptions
+                {
+                    LineItems = new List<SessionLineItemOptions>(),
+                    PaymentMethodTypes = new List<string>
+                    {
+                        "card"
+                    },
+                  
+                    Mode = "payment",
+                    SuccessUrl = domain + $"/Customer/Cart/OrderConfirm?id={Order.Id}",
+                    CancelUrl = domain + "/Customer/Cart/Index",
+                };
+
+                foreach (var item in ShoppingCartList)
+                {
+                    var sessionLineItems = new SessionLineItemOptions
+                    {
+                        PriceData = new SessionLineItemPriceDataOptions
+                        {
+                            UnitAmount = ((long?)(item.MenuItem.Price * 100)),
+                            Currency = "usd",
+                            ProductData = new SessionLineItemPriceDataProductDataOptions
+                            {
+                                Name = item.MenuItem.Name,
+                            }
+                        },
+                        Quantity = item.Count
+                    };
+                    options.LineItems.Add(sessionLineItems);
+                }
+                var service = new SessionService();
+                Session session = service.Create(options);
+
+                Response.Headers.Add("Location", session.Url);
+                Order.SessionId = session.Id;
+                await _unitOfWork.Save();
+                return new StatusCodeResult(303);
             }
+            return Page();
         }
     }
 }

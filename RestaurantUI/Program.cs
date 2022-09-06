@@ -7,6 +7,7 @@ using RestaurantUI.Profiles;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Restaurant.Utility;
+using Stripe;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,7 +31,9 @@ builder.Services.ConfigureApplicationCookie(options =>
 });
 
 builder.Services.AddSingleton<IEmailSender, EmailSender>();
+
 builder.Services.Configure<StripeSettings>(builder.Configuration.GetSection("Stripe"));
+
 // Add service NToastNotify
 builder.Services.AddRazorPages().AddNToastNotifyToastr(new ToastrOptions()
 {
@@ -58,6 +61,10 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+string key = builder.Configuration.GetSection("Stripe:SecretKey").Get<string>();
+StripeConfiguration.ApiKey = key;
+
 app.UseAuthentication();
 
 app.UseAuthorization();

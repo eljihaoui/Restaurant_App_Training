@@ -1,5 +1,9 @@
 ﻿@page
+@using Microsoft.Extensions.Options
+@using Restaurant.Utility
 @model RestaurantUI.Pages.Customer.Cart.SummaryModel
+@inject IOptions<StripeSettings> Stripe
+
 @{
 }
 <form method="post">
@@ -113,6 +117,8 @@
 </form>
 @section Scripts{
     @{
+        <script src="https://polyfill.io/v3/polyfill.min.js?version=3.52.1&features=fetch"></script>
+        <script src="https://js.stripe.com/v3/"></script>
         <partial name="_ValidationScriptsPartial" />
     }
   }
