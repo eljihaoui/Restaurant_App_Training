@@ -7,11 +7,8 @@ namespace Restaurant.DAL.Implementations
         public ICategoryRepository CategoryRepo { get; private set; }
         public IFoodTypeRepository FoodTypeRepo { get; private set; }
         public IMenuItemRepository MenuItemRepo { get; private set; }
-
         public IShoppingCartRepository ShoppingCartRepo { get; private set; }
-
         public IOrderRepository OrderRepo { get; private set; }
-
         public IOrderDetailsCartRepository OrderDetailsRepo { get; private set; }
 
         private readonly RestaurantDBContext _db;

@@ -33,7 +33,7 @@
                     <a href="#" class="nav-link">Contact</a>
                 </li>
                 <li class="nav-item d-none d-sm-inline-block">
-                    <a  asp-page="/Customer/Cart/Index" class="nav-link"><i class="fa-solid fa-cart-plus" style="color:brown"></i> Cart </a>
+                    <a asp-page="/Customer/Cart/Index" class="nav-link"><i class="fa-solid fa-cart-plus" style="color:brown"></i> Cart </a>
                 </li>
             </ul>
             <!-- Right navbar links -->
@@ -256,6 +256,14 @@
                                     <a asp-page="/Admin/MenuItems/Index" class="nav-link">
                                         <i class="fa-solid fa-list"></i>
                                         <p>Menu Items</p>
+                                    </a>
+                                </li>
+                            </ul>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a asp-page="/Admin/Orders/OrderList" class="nav-link">
+                                        <i class="fa-solid fa-list"></i>
+                                        <p>Order List</p>
                                     </a>
                                 </li>
                             </ul>
