@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Restaurant.Utility
+﻿namespace Restaurant.Utility
 {
     public  static class ConstDefs
     {
@@ -21,6 +15,7 @@ namespace Restaurant.Utility
         public const string StatusCompleted = "Completed";
         public const string StatusCancelled = "Cancelled";
         public const string StatusRefunded = "Refunded";
+
         public const string SessionCart = "SessionCart";
 
     }
