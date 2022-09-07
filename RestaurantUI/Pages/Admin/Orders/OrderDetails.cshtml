@@ -1,4 +1,5 @@
 ﻿@page
+@using Restaurant.Utility
 @model RestaurantUI.Pages.Admin.Orders.OrderDetailsModel
 @{
 }
@@ -69,6 +70,12 @@
 
             </div>
             <div class="col-lg-4 col-12">
+
+                <div class="mb-4">
+                    <button type="submit" disabled class="btn btn-outline-info form-control">
+                        <i class="fa-solid fa-signal"></i>  @Model.OrderDetailsVM.Order.Status
+                    </button>
+                </div>
                 <h4 class="d-flex justify-content-between align-content-center mb-3">
                     <span class="text-muted">Order ID: </span>
                     <span class="badge badge-secondary badge-pill">@Model.OrderDetailsVM.Order.Id</span>
@@ -81,7 +88,7 @@
                                 <h6 class="my-0">@item.Name</h6>
                                 <small class="text-muted">Quantity : @item.Count</small>
                             </div>
-                            <span class="text-muted">$ @(item.Price*item.Count)</span>
+                            <span class="text-muted">$ @(item.Price * item.Count)</span>
                         </li>
                     }
 
@@ -92,18 +99,36 @@
 
                 </ul>
 
-                <button type="submit" disabled class="btn btn-info form-control">ORDER STATUS</button>
+                @if (Model.OrderDetailsVM.Order.Status == ConstDefs.StatusReady
+                && (User.IsInRole(ConstDefs.ManagerRole) || User.IsInRole(ConstDefs.FontDeskRole)))
+                {
+                    <button type="submit" class="btn btn-info form-control"
+                        asp-page-handler="OrderConplete" asp-route-OrderId="@Model.OrderDetailsVM.Order.Id">
+                        <i class="fa-solid fa-check-double"></i>   Complete Order
+                    </button>
+                }
 
 
-                <div class="row pt-3">
-                    <div class="col-6">
-                        <button type="submit" class="btn btn-warning form-control"><i class="bi bi-x-square"></i> Cancel Order</button>
+                @if ((Model.OrderDetailsVM.Order.Status == ConstDefs.StatusReady
+                || Model.OrderDetailsVM.Order.Status == ConstDefs.StatusSubmitted
+                || Model.OrderDetailsVM.Order.Status == ConstDefs.StatusInProcess)
+                && (User.IsInRole(ConstDefs.ManagerRole) || User.IsInRole(ConstDefs.FontDeskRole)))
+                {
+                    <div class="row pt-3">
+                        <div class="col-6">
+                            <button type="submit" class="btn btn-warning form-control"
+                                asp-page-handler="OrderCancel" asp-route-OrderId="@Model.OrderDetailsVM.Order.Id">
+                                <i class="fa-solid fa-ban"></i> Cancel Order
+                            </button>
+                        </div>
+                        <div class="col-6">
+                            <button type="submit" class="btn btn-danger form-control"
+                                asp-page-handler="RefundOrder" asp-route-OrderId="@Model.OrderDetailsVM.Order.Id">
+                                <i class="fa-solid fa-hand-holding-dollar"></i> Refund Order
+                            </button>
+                        </div>
                     </div>
-                    <div class="col-6">
-                        <button type="submit" class="btn btn-danger form-control"><i class="bi bi-currency-dollar"></i> Refund Order</button>
-                    </div>
-                </div>
-
+                }
 
 
             </div>
