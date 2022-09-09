@@ -7,6 +7,20 @@
 
 <div class="p-1">
     <div class="row">
+        <div class="col-6">
+            <h2 class="text-primary">Order List</h2>
+        </div>
+        <div class="col-6">
+            <ul class="list-group list-group-horizontal" style="list-style-type: none;">
+                <li> <button onclick='Reload("?handler=List")' class="btn btn-outline-primary">-- All --</button> </li>
+                <li> <button onclick='Reload("?handler=List&status=cancelled")' class="btn btn-outline-warning">cancelled</button> </li>
+                <li> <button onclick='Reload("?handler=List&status=completed")' class="btn btn-outline-success">completed</button> </li>
+                <li> <button onclick='Reload("?handler=List&status=ready")' class="btn btn-outline-info">Ready For PickUp</button> </li>
+                <li> <button onclick='Reload("?handler=List&status=inprocess")' class="btn btn-outline-secondary">InProcess</button> </li>
+            </ul>
+        </div>
+    </div>
+    <div class="row">
         <div class="col-12">
             <a class="btn btn-outline-info mt-1 mb-2 p-1" asp-page="AddOrEdit"><i class="fa-solid fa-circle-plus"></i> Create </a>
             <table id="DtMenuItems" class="w-100 table table-bordered table-striped">
@@ -49,16 +63,20 @@
                         "data": 'id', "render": function (data) { // data is the id
                             //`` (Altr+7) Backtick
                             return `
-                                    <div class="w-100 btn-group">
-                                   <a href="/Admin/Orders/OrderDetails?id=${data}" class="btn btn-outline-info mx-1 p-1">
-                                     <i class="fa-solid fa-magnifying-glass" style="color:blueviolet;"></i>
-                                     </a>
-                                  </div>
-                              `
+                                                    <div class="w-100 btn-group">
+                                                   <a href="/Admin/Orders/OrderDetails?id=${data}" class="btn btn-outline-info mx-1 p-1">
+                                                     <i class="fa-solid fa-magnifying-glass" style="color:blueviolet;"></i>
+                                                     </a>
+                                                  </div>
+                                              `
                         }
                     }
                 ]
             });
         });
+
+        function Reload(urlFilter){
+            dataTable.ajax.url(urlFilter).load();
+        }
     </script>
 }
