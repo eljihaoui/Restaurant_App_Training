@@ -78,13 +78,7 @@ namespace RestaurantUI.Areas.Identity.Pages.Account
         {
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
-            if (!await _roleManger.RoleExistsAsync(ConstDefs.ManagerRole))
-            {
-                await _roleManger.CreateAsync(new IdentityRole(ConstDefs.ManagerRole));
-                await _roleManger.CreateAsync(new IdentityRole(ConstDefs.KitchenRole));
-                await _roleManger.CreateAsync(new IdentityRole(ConstDefs.CustomerRole));
-                await _roleManger.CreateAsync(new IdentityRole(ConstDefs.FontDeskRole));
-            }
+           
         }
 
         public async Task<IActionResult> OnPostAsync(string? returnUrl = null)
@@ -97,6 +91,7 @@ namespace RestaurantUI.Areas.Identity.Pages.Account
                 user.PhoneNumber = Input.PhoneNumber;
                 user.LastName = Input.LastName;
                 user.FirstName = Input.FirstName;
+                string fullname = user.FirstName + " " + user.LastName;
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {
@@ -113,8 +108,8 @@ namespace RestaurantUI.Areas.Identity.Pages.Account
                         values: new { area = "Identity", userId = user.Id, code = code, returnUrl = returnUrl },
                         protocol: Request.Scheme);
 
-                    await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                    await _emailSender.SendEmailAsync(Input.Email, "Confirmation d'email",
+                        $" Bonojur <b> {fullname} </b> <br/> Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
@@ -122,6 +117,10 @@ namespace RestaurantUI.Areas.Identity.Pages.Account
                     }
                     else
                     {
+                        if (User.IsInRole(ConstDefs.ManagerRole)){
+
+                            return RedirectToPage("/Customer/Home/Index");
+                        }
                         await _signInManager.SignInAsync(user, isPersistent: false);
                         return LocalRedirect(returnUrl);
                     }

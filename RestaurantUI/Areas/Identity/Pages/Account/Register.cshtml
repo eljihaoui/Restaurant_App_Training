@@ -20,7 +20,7 @@
             </div>
             <div class="form-floating">
                 <label asp-for="Input.FirstName"></label>
-                <input asp-for="Input.FirstName" class="form-control"  aria-required="true" />
+                <input asp-for="Input.FirstName" class="form-control" aria-required="true" />
                 <span asp-validation-for="Input.FirstName" class="text-danger"></span>
             </div>
             <div class="form-floating">
@@ -43,46 +43,55 @@
                 <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" />
                 <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
             </div>
-            <div class="form-floating mt-2">
-               <label>Select Role</label><br />
-                <input type="radio" name="rUserRole" value="@ConstDefs.ManagerRole" /> @ConstDefs.ManagerRole
-                <input type="radio" name="rUserRole" value="@ConstDefs.KitchenRole" /> @ConstDefs.KitchenRole
-                <input type="radio" name="rUserRole" value="@ConstDefs.FontDeskRole" /> @ConstDefs.FontDeskRole
-                <input type="radio" name="rUserRole" value="@ConstDefs.CustomerRole" /> @ConstDefs.CustomerRole
-            </div>
+            @if (User.IsInRole(ConstDefs.ManagerRole))
+            {
+                <div class="form-floating mt-2">
+                    <label>Select Role</label><br />
+                    <input type="radio" name="rUserRole" value="@ConstDefs.ManagerRole" /> @ConstDefs.ManagerRole
+                    <input type="radio" name="rUserRole" value="@ConstDefs.KitchenRole" /> @ConstDefs.KitchenRole
+                    <input type="radio" name="rUserRole" value="@ConstDefs.FontDeskRole" /> @ConstDefs.FontDeskRole
+                    <input type="radio" name="rUserRole" value="@ConstDefs.CustomerRole" /> @ConstDefs.CustomerRole
+                </div>
+            }
+
             <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary mt-2">Register</button>
         </form>
     </div>
-    <div class="col-md-6 col-md-offset-2">
-        <section>
-            <h3>Use another service to register.</h3>
-            <hr />
-            @{
-                if ((Model.ExternalLogins?.Count ?? 0) == 0)
-                {
-                    <div>
-                        <p>
-                            There are no external authentication services configured. See this <a href="https://go.microsoft.com/fwlink/?LinkID=532715">article
-                            about setting up this ASP.NET application to support logging in via external services</a>.
-                        </p>
-                    </div>
-                }
-                else
-                {
-                    <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
+    @if (!User.IsInRole(ConstDefs.ManagerRole))
+    {
+        <div class="col-md-6 col-md-offset-2">
+            <section>
+                <h3>Use another service to register.</h3>
+                <hr />
+                @{
+                    if ((Model.ExternalLogins?.Count ?? 0) == 0)
+                    {
                         <div>
                             <p>
-                                @foreach (var provider in Model.ExternalLogins)
-                                {
-                                    <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
-                                }
+                                There are no external authentication services configured. See this <a href="https://go.microsoft.com/fwlink/?LinkID=532715">
+                                    article
+                                    about setting up this ASP.NET application to support logging in via external services
+                                </a>.
                             </p>
                         </div>
-                    </form>
+                    }
+                    else
+                    {
+                        <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
+                            <div>
+                                <p>
+                                    @foreach (var provider in Model.ExternalLogins)
+                                    {
+                                        <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
+                                    }
+                                </p>
+                            </div>
+                        </form>
+                    }
                 }
-            }
-        </section>
-    </div>
+            </section>
+        </div>
+    }
 </div>
 
 @section Scripts {

@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using Restaurant.Utility
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -33,7 +34,11 @@
                     <a href="#" class="nav-link">Contact</a>
                 </li>
                 <li class="nav-item d-none d-sm-inline-block">
-                    <a asp-page="/Customer/Cart/Index" class="nav-link"><i class="fa-solid fa-cart-plus" style="color:brown"></i> Cart </a>
+                    <a asp-page="/Customer/Cart/Index" class="nav-link">
+
+                        @await Component.InvokeAsync("ShoppingCart")
+
+                    </a>
                 </li>
             </ul>
             <!-- Right navbar links -->
@@ -235,47 +240,65 @@
                                     <span class="badge badge-info right">6</span>
                                 </p>
                             </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a asp-page="/Admin/Categories/Index" class="nav-link">
-                                        <i class="fa-solid fa-list"></i>
-                                        <p>Categories</p>
-                                    </a>
-                                </li>
-                            </ul>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a asp-page="/Admin/FoodTypes/Index" class="nav-link">
-                                        <i class="fa-solid fa-list"></i>
-                                        <p>Food Types</p>
-                                    </a>
-                                </li>
-                            </ul>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a asp-page="/Admin/MenuItems/Index" class="nav-link">
-                                        <i class="fa-solid fa-list"></i>
-                                        <p>Menu Items</p>
-                                    </a>
-                                </li>
-                            </ul>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a asp-page="/Admin/Orders/OrderList" class="nav-link">
-                                        <i class="fa-solid fa-list"></i>
-                                        <p>Order List</p>
-                                    </a>
-                                </li>
-                            </ul>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a asp-page="/Admin/Orders/OrderManager" class="nav-link">
-                                        <i class="fa-solid fa-list"></i>
-                                        <p>Manage Order </p>
-                                    </a>
-                                </li>
-                            </ul>
-
+                            @if (User.IsInRole(ConstDefs.ManagerRole))
+                            {
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a asp-area="Identity" asp-page="/Account/Register" class="nav-link">
+                                            <i class="fa-solid fa-list"></i>
+                                            <p>Register Emplooyee</p>
+                                        </a>
+                                    </li>
+                                </ul>
+                                <div class="dropdown-divider"></div>
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a asp-page="/Admin/Categories/Index" class="nav-link">
+                                            <i class="fa-solid fa-list"></i>
+                                            <p>Categories</p>
+                                        </a>
+                                    </li>
+                                </ul>
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a asp-page="/Admin/FoodTypes/Index" class="nav-link">
+                                            <i class="fa-solid fa-list"></i>
+                                            <p>Food Types</p>
+                                        </a>
+                                    </li>
+                                </ul>
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a asp-page="/Admin/MenuItems/Index" class="nav-link">
+                                            <i class="fa-solid fa-list"></i>
+                                            <p>Menu Items</p>
+                                        </a>
+                                    </li>
+                                </ul>
+                            }
+                            @if (User.IsInRole(ConstDefs.ManagerRole) || User.IsInRole(ConstDefs.FontDeskRole))
+                            {
+                                <div class="dropdown-divider"></div>
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a asp-page="/Admin/Orders/OrderList" class="nav-link">
+                                            <i class="fa-solid fa-list"></i>
+                                            <p>Order List</p>
+                                        </a>
+                                    </li>
+                                </ul>
+                            }
+                            @if (User.IsInRole(ConstDefs.ManagerRole) || User.IsInRole(ConstDefs.KitchenRole))
+                            {
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a asp-page="/Admin/Orders/OrderManager" class="nav-link">
+                                            <i class="fa-solid fa-list"></i>
+                                            <p>Manage Order </p>
+                                        </a>
+                                    </li>
+                                </ul>
+                            }
                         </li>
                     </ul>
                 </nav>

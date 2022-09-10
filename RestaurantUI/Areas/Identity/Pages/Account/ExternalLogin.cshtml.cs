@@ -13,6 +13,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using Restaurant.Models;
+using Restaurant.Utility;
 
 namespace RestaurantUI.Areas.Identity.Pages.Account
 {
@@ -51,6 +53,11 @@ namespace RestaurantUI.Areas.Identity.Pages.Account
             [Required]
             [EmailAddress]
             public string Email { get; set; }
+            public string FirstName { get; set; }
+            [Required]
+            public string LastName { get; set; }
+            [Required]
+            public string PhoneNumber { get; set; }
         }
 
         public IActionResult OnGetAsync()
@@ -66,13 +73,13 @@ namespace RestaurantUI.Areas.Identity.Pages.Account
             return new ChallengeResult(provider, properties);
         }
 
-        public async Task<IActionResult> OnGetCallbackAsync(string returnUrl = null, string remoteError = null)
+        public async Task<IActionResult> OnGetCallbackAsync(string? returnUrl = null, string remoteError = null)
         {
             returnUrl = returnUrl ?? Url.Content("~/");
             if (remoteError != null)
             {
                 ErrorMessage = $"Error from external provider: {remoteError}";
-                return RedirectToPage("./Login", new {ReturnUrl = returnUrl });
+                return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
             }
             var info = await _signInManager.GetExternalLoginInfoAsync();
             if (info == null)
@@ -82,7 +89,7 @@ namespace RestaurantUI.Areas.Identity.Pages.Account
             }
 
             // Sign in the user with this external login provider if the user already has a login.
-            var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor : true);
+            var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: true);
             if (result.Succeeded)
             {
                 _logger.LogInformation("{Name} logged in with {LoginProvider} provider.", info.Principal.Identity.Name, info.LoginProvider);
@@ -101,14 +108,17 @@ namespace RestaurantUI.Areas.Identity.Pages.Account
                 {
                     Input = new InputModel
                     {
-                        Email = info.Principal.FindFirstValue(ClaimTypes.Email)
+                        Email = info.Principal.FindFirstValue(ClaimTypes.Email),
+                        FirstName = info.Principal.FindFirstValue(ClaimTypes.Name).Split(' ')[0],
+                        LastName = info.Principal.FindFirstValue(ClaimTypes.Name).Split(' ')[1],
+                        PhoneNumber = info.Principal.FindFirstValue(ClaimTypes.MobilePhone),
                     };
                 }
                 return Page();
             }
         }
 
-        public async Task<IActionResult> OnPostConfirmationAsync(string returnUrl = null)
+        public async Task<IActionResult> OnPostConfirmationAsync(string? returnUrl = null)
         {
             returnUrl = returnUrl ?? Url.Content("~/");
             // Get the information about the user from the external login provider
@@ -121,11 +131,16 @@ namespace RestaurantUI.Areas.Identity.Pages.Account
 
             if (ModelState.IsValid)
             {
-                var user = new IdentityUser { UserName = Input.Email, Email = Input.Email };
-
+                var user = new ApplicationUser { UserName = Input.Email, Email = Input.Email };
+                user.PhoneNumber = Input.PhoneNumber;
+                user.LastName = Input.LastName;
+                user.FirstName = Input.FirstName;
                 var result = await _userManager.CreateAsync(user);
                 if (result.Succeeded)
                 {
+
+                    // Add Role
+                    await _userManager.AddToRoleAsync(user, ConstDefs.CustomerRole);
                     result = await _userManager.AddLoginAsync(user, info);
                     if (result.Succeeded)
                     {

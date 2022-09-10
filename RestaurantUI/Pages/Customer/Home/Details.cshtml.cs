@@ -5,6 +5,7 @@ using NToastNotify;
 using Restaurant.DAL.Interfaces;
 using Restaurant.Models;
 using Restaurant.Models.ViewModels;
+using Restaurant.Utility;
 using System.Security.Claims;
 
 namespace RestaurantUI.Pages.Customer.Home
@@ -58,6 +59,11 @@ namespace RestaurantUI.Pages.Customer.Home
                     await _unitOfWork.ShoppingCartRepo.Add(cart);
                     if (await _unitOfWork.Save())
                     {
+
+                        //int count = (await _unitOfWork.ShoppingCartRepo
+                        //    .GetAll(o => o.UserId == cart.UserId)).ToList().Count;
+                        //HttpContext.Session.SetInt32(ConstDefs.SessionCart, count);
+
                         _notify.AddSuccessToastMessage("MenuItem added to cart successffuly ");
                         return RedirectToPage("/Index");
                     }
