@@ -250,7 +250,6 @@
                                         </a>
                                     </li>
                                 </ul>
-                                <div class="dropdown-divider"></div>
                                 <ul class="nav nav-treeview">
                                     <li class="nav-item">
                                         <a asp-page="/Admin/Categories/Index" class="nav-link">
@@ -278,7 +277,6 @@
                             }
                             @if (User.IsInRole(ConstDefs.ManagerRole) || User.IsInRole(ConstDefs.FontDeskRole))
                             {
-                                <div class="dropdown-divider"></div>
                                 <ul class="nav nav-treeview">
                                     <li class="nav-item">
                                         <a asp-page="/Admin/Orders/OrderList" class="nav-link">
